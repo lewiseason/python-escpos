@@ -39,7 +39,7 @@ class Escpos:
         i = 0
         cont = 0
         buffer = ""
-       
+
         self._raw(S_RASTER_N)
         buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
         self._raw(buffer.decode('hex'))
@@ -97,7 +97,7 @@ class Escpos:
                         break
                     elif im_color > (255 * 3 / pattern_len * pattern_len) and im_color <= (255 * 3):
                         pix_line += im_pattern[-1]
-                        break 
+                        break
             pix_line += im_right
             img_size[0] += im_border[1]
 
@@ -112,9 +112,9 @@ class Escpos:
         self._convert_image(im)
 
 
-    def qr(self,text):
+    def qr(self,text,version=4,box_size=4,border=1):
         """ Print QR Code for the provided string """
-        qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
+        qr_code = qrcode.QRCode(version=version, box_size=box_size, border=border)
         qr_code.add_data(text)
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
@@ -149,9 +149,9 @@ class Escpos:
             self._raw(BARCODE_TXT_BTH)
         elif pos.upper() == "ABOVE":
             self._raw(BARCODE_TXT_ABV)
-        else:  # DEFAULT POSITION: BELOW 
+        else:  # DEFAULT POSITION: BELOW
             self._raw(BARCODE_TXT_BLW)
-        # Type 
+        # Type
         if bc.upper() == "UPC-A":
             self._raw(BARCODE_UPC_A)
         elif bc.upper() == "UPC-E":
@@ -174,7 +174,7 @@ class Escpos:
         else:
             raise exception.BarcodeCodeError()
 
-        
+
     def text(self, txt):
         """ Print alpha-numeric text """
         if txt:
