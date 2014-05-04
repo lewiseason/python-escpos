@@ -17,10 +17,10 @@ import time
 from constants import *
 from exceptions import *
 
+
 class Escpos:
     """ ESC/POS Printer object """
-    device    = None
-
+    device = None
 
     def _check_image_size(self, size):
         """ Check and fix the size of the image to 32 bits """
@@ -32,7 +32,6 @@ class Escpos:
                 return (image_border / 2, image_border / 2)
             else:
                 return (image_border / 2, (image_border / 2) + 1)
-
 
     def _print_image(self, line, size):
         """ Print formatted image """
@@ -46,7 +45,7 @@ class Escpos:
         buffer = ""
 
         while i < len(line):
-            hex_string = int(line[i:i+8],2)
+            hex_string = int(line[i:i+8], 2)
             buffer += "%02X" % hex_string
             i += 8
             cont += 1
@@ -55,19 +54,18 @@ class Escpos:
                 buffer = ""
                 cont = 0
 
-
     def _convert_image(self, im):
         """ Parse image and prepare it to a printable format """
-        pixels   = []
+        pixels = []
         pix_line = ""
-        im_left  = ""
+        im_left = ""
         im_right = ""
-        switch   = 0
-        img_size = [ 0, 0 ]
-
+        switch = 0
+        img_size = [0, 0]
 
         if im.size[0] > 512:
-            print  ("WARNING: Image is wider than 512 and could be truncated at print time ")
+            print """WARNING: Image is wider than 512 and could be truncated at
+            print time"""
         if im.size[1] > 255:
             raise ImageSizeError()
 
@@ -87,7 +85,7 @@ class Escpos:
                 im_color = (RGB[0] + RGB[1] + RGB[2])
                 im_pattern = "1X0"
                 pattern_len = len(im_pattern)
-                switch = (switch - 1 ) * (-1)
+                switch = (switch - 1) * -1
                 for x in range(pattern_len):
                     if im_color <= (255 * 3 / pattern_len * (x+1)):
                         if im_pattern[x] == "X":
@@ -95,7 +93,8 @@ class Escpos:
                         else:
                             pix_line += im_pattern[x]
                         break
-                    elif im_color > (255 * 3 / pattern_len * pattern_len) and im_color <= (255 * 3):
+                    elif im_color > (255 * 3 / pattern_len * pattern_len)
+                    and im_color <= (255 * 3):
                         pix_line += im_pattern[-1]
                         break
             pix_line += im_right
@@ -103,18 +102,17 @@ class Escpos:
 
         self._print_image(pix_line, img_size)
 
-
-    def image(self,path_img):
+    def image(self, path_img):
         """ Open image file """
         im_open = Image.open(path_img)
         im = im_open.convert("RGB")
         # Convert the RGB image in printable image
         self._convert_image(im)
 
-
-    def qr(self,text,version=4,box_size=4,border=1):
+    def qr(self, text, version=4, box_size=4, border=1):
         """ Print QR Code for the provided string """
-        qr_code = qrcode.QRCode(version=version, box_size=box_size, border=border)
+        qr_code = qrcode.QRCode(version=version, box_size=box_size,
+                                border=border)
         qr_code.add_data(text)
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
@@ -122,25 +120,24 @@ class Escpos:
         # Convert the RGB image in printable image
         self._convert_image(im)
 
-
     def barcode(self, code, bc, width, height, pos, font):
         """ Print Barcode """
         # Align Bar Code()
         self._raw(TXT_ALIGN_CT)
         # Height
-        if height >=2 or height <=6:
+        if height >= 2 or height <= 6:
             self._raw(BARCODE_HEIGHT)
         else:
             raise BarcodeSizeError()
         # Width
-        if width >= 1 or width <=255:
+        if width >= 1 or width <= 255:
             self._raw(BARCODE_WIDTH)
         else:
             raise BarcodeSizeError()
         # Font
         if font.upper() == "B":
             self._raw(BARCODE_FONT_B)
-        else: # DEFAULT FONT: A
+        else:  # DEFAULT FONT: A
             self._raw(BARCODE_FONT_A)
         # Position
         if pos.upper() == "OFF":
@@ -174,7 +171,6 @@ class Escpos:
         else:
             raise exception.BarcodeCodeError()
 
-
     def text(self, txt):
         """ Print alpha-numeric text """
         if txt:
@@ -182,11 +178,10 @@ class Escpos:
         else:
             raise TextError()
 
-
     def set(self, align='left', font='a', type='normal', width=1, height=1):
         """ Set text properties """
         # Width
-        if height != 2 and width != 2: # DEFAULT SIZE: NORMAL
+        if height != 2 and width != 2:  # DEFAULT SIZE: NORMAL
             self._raw(TXT_NORMAL)
 
         if height == 2:
@@ -230,7 +225,6 @@ class Escpos:
         elif align.upper() == "LEFT":
             self._raw(TXT_ALIGN_LT)
 
-
     def cut(self, mode=''):
         """ Cut paper """
         # Fix the size between last line and cut
@@ -238,9 +232,8 @@ class Escpos:
         self._raw("\n\n\n\n\n\n")
         if mode.upper() == "PART":
             self._raw(PAPER_PART_CUT)
-        else: # DEFAULT MODE: FULL CUT
+        else:  # DEFAULT MODE: FULL CUT
             self._raw(PAPER_FULL_CUT)
-
 
     def cashdraw(self, pin):
         """ Send pulse to kick the cash drawer """
@@ -251,7 +244,6 @@ class Escpos:
         else:
             raise CashDrawerError()
 
-
     def hw(self, hw):
         """ Hardware operations """
         if hw.upper() == "INIT":
@@ -260,9 +252,8 @@ class Escpos:
             self._raw(HW_SELECT)
         elif hw.upper() == "RESET":
             self._raw(HW_RESET)
-        else: # DEFAULT: DOES NOTHING
+        else:  # DEFAULT: DOES NOTHING
             pass
-
 
     def control(self, ctl):
         """ Feed control sequences """

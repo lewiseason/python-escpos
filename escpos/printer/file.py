@@ -9,6 +9,7 @@
 
 from escpos import *
 
+
 class File(escpos.Escpos):
     """ Define Generic file printer """
 
@@ -19,7 +20,6 @@ class File(escpos.Escpos):
         self.devfile = devfile
         self.open()
 
-
     def open(self):
         """ Open system file """
         self.device = open(self.devfile, "wb")
@@ -27,11 +27,9 @@ class File(escpos.Escpos):
         if self.device is None:
             print "Could not open the specified file %s" % self.devfile
 
-
     def _raw(self, msg):
         """ Print any command sent in raw format """
-        self.device.write(msg);
-
+        self.device.write(msg)
 
     def __del__(self):
         """ Close system file """
