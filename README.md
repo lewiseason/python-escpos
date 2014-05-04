@@ -43,16 +43,16 @@ First run the command to look for the "Vendor ID" and "Product ID",
 then write down the values, these values are displayed just before
 the name of the device with the following format:
 
-  xxxx:xxxx
+    xxxx:xxxx
 
 Example:
-  Bus 002 Device 001: ID 1a2b:1a2b Device name
+    Bus 002 Device 001: ID 1a2b:1a2b Device name
 
 Write down the the values in question, then issue the following
 command so you can get the "Interface" number and "End Point"
 
-  lsusb -vvv -d xxxx:xxxx | grep iInterface
-  lsusb -vvv -d xxxx:xxxx | grep bEndpointAddress | grep OUT
+    lsusb -vvv -d xxxx:xxxx | grep iInterface
+    lsusb -vvv -d xxxx:xxxx | grep bEndpointAddress | grep OUT
 
 The first command will yields the "Interface" number that must
 be handy to have and the second yields the "Output Endpoint"
@@ -67,17 +67,17 @@ with your instance.
 
 The following example shows how to initialize the Epson TM-TI88IV
 *** NOTE: Always finish the sequence with Epson.cut() otherwise
-          you will endup with weird chars being printed.
+          you will end up with weird chars being printed.
 
-  from escpos.printer.usb import Printer
+    from escpos.printer.usb import Printer
 
-  """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
-  Epson = Printer(0x04b8,0x0202,0)
-  Epson.text("Hello World")
-  Epson.image("logo.gif")
-  Epson.barcode
-  Epson.barcode('1324354657687','EAN13',64,2,'','')
-  Epson.cut()
+    """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
+    Epson = Printer(0x04b8,0x0202,0)
+    Epson.text("Hello World")
+    Epson.image("logo.gif")
+    Epson.barcode
+    Epson.barcode('1324354657687','EAN13',64,2,'','')
+    Epson.cut()
 
 -----------------------------------------------------------------
 
