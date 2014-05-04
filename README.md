@@ -69,21 +69,19 @@ The following example shows how to initialize the Epson TM-TI88IV
 *** NOTE: Always finish the sequence with Epson.cut() otherwise
           you will endup with weird chars being printed.
 
-  from escpos import *
+  from escpos.printer.usb import Printer
 
   """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
-  Epson = escpos.Escpos(0x04b8,0x0202,0)
+  Epson = Printer(0x04b8,0x0202,0)
   Epson.text("Hello World")
   Epson.image("logo.gif")
   Epson.barcode
   Epson.barcode('1324354657687','EAN13',64,2,'','')
   Epson.cut()
 
-------------------------------------------------------------------
-5. Links
+-----------------------------------------------------------------
 
-Please visit project homepage at:
-http://repo.bashlinux.com/projects/escpos.html
+Author: Manuel F Martinez <manpaz@bashlinux.com>
 
-Manuel F Martinez <manpaz@bashlinux.com>
+Tidying: Lewis Eason <me@lewiseason.co.uk>
 
